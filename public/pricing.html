@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fiyatlar - Güvenlimi?</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">
+    <span class="shield">🛡️</span> güvenlimi<span class="brand-dot">?</span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="index.html">Ana Sayfa</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="pricing.html" class="active">Fiyatlar</a></li>
+  </ul>
+  <div class="navbar-actions" id="navActions">
+    <a href="login.html" class="btn-outline-nav">Giriş Yap</a>
+    <a href="register.html" class="btn-nav">Kayıt Ol</a>
+  </div>
+</nav>
+
+<div class="pricing-section">
+  <!-- Hero -->
+  <div class="pricing-hero">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);padding:6px 18px;border-radius:50px;font-size:0.85rem;font-weight:600;margin-bottom:1.5rem;">
+      ⚡ Daha Fazla Tarama Hakkı
+    </div>
+    <h1>Güvenlik Paketleri</h1>
+    <p>Her kullanıcıya günde 1 ücretsiz tarama. Daha fazlası için aşağıdaki paketleri tercih edin.</p>
+  </div>
+
+  <!-- Free Banner -->
+  <div style="background:linear-gradient(135deg,rgba(0,200,81,0.1),rgba(0,200,81,0.05));border:1px solid rgba(0,200,81,0.3);border-radius:var(--radius);margin:2rem 5%;padding:1.5rem 2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+    <span style="font-size:2rem;">🎁</span>
+    <div>
+      <div style="font-weight:700;font-size:1rem;color:#00a344;">Ücretsiz Plan — Herkese Dahil</div>
+      <div style="color:var(--text-muted);font-size:0.9rem;margin-top:0.2rem;">Her gün otomatik olarak 1 tarama hakkı alırsınız. Kayıt gerektirmez.</div>
+    </div>
+    <a href="register.html" class="btn btn-outline" style="margin-left:auto;border-color:var(--success);color:var(--success);">Ücretsiz Başla →</a>
+  </div>
+
+  <!-- Pricing Cards -->
+  <div class="pricing-cards">
+    <div class="pricing-grid">
+
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="pkg-icon">🚀</div>
+        <div class="pkg-name">Başlangıç</div>
+        <div class="pkg-price">100 <span>TL</span></div>
+        <div class="pkg-credits">10 Tarama Hakkı</div>
+        <ul class="pkg-features">
+          <li>10 Tarama Hakkı</li>
+          <li>Tüm güvenlik kontrolleri</li>
+          <li>AI destekli raporlar</li>
+          <li>30 gün geçerli</li>
+        </ul>
+        <button class="btn btn-outline btn-block" onclick="openPayment('starter', '10 Tarama', '100')">
+          Satın Al
+        </button>
+      </div>
+
+      <!-- Pro - Featured -->
+      <div class="pricing-card featured">
+        <div class="featured-badge">⭐ En Popüler</div>
+        <div class="pkg-icon">💎</div>
+        <div class="pkg-name">Pro</div>
+        <div class="pkg-price">250 <span>TL</span></div>
+        <div class="pkg-credits">30 Tarama Hakkı</div>
+        <ul class="pkg-features">
+          <li>30 Tarama Hakkı</li>
+          <li>Tüm güvenlik kontrolleri</li>
+          <li>AI destekli raporlar</li>
+          <li>Öncelikli destek</li>
+          <li>60 gün geçerli</li>
+        </ul>
+        <button class="btn btn-primary btn-block" onclick="openPayment('pro', '30 Tarama', '250')">
+          Satın Al
+        </button>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div class="pkg-icon">🏢</div>
+        <div class="pkg-name">Kurumsal</div>
+        <div class="pkg-price">700 <span>TL</span></div>
+        <div class="pkg-credits">100 Tarama Hakkı</div>
+        <ul class="pkg-features">
+          <li>100 Tarama Hakkı</li>
+          <li>Tüm güvenlik kontrolleri</li>
+          <li>AI destekli raporlar</li>
+          <li>Öncelikli destek</li>
+          <li>Ekip hesabı (yakında)</li>
+          <li>90 gün geçerli</li>
+        </ul>
+        <button class="btn btn-outline btn-block" onclick="openPayment('enterprise', '100 Tarama', '700')">
+          Satın Al
+        </button>
+      </div>
+
+    </div>
+
+    <!-- FAQ -->
+    <div style="max-width:700px;margin:3rem auto 0;">
+      <h2 style="font-size:1.5rem;font-weight:800;text-align:center;margin-bottom:2rem;">Sıkça Sorulan Sorular</h2>
+      <div class="card" style="margin-bottom:12px;cursor:pointer;" onclick="toggleFaq(this)">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-weight:600;">
+          Satın aldığım haklar ne zaman aktif olur? <span>▼</span>
+        </div>
+        <div class="faq-ans" style="display:none;margin-top:0.8rem;color:var(--text-muted);font-size:0.9rem;">
+          Ödeme başarılı olduğu anda tarama hakları anında hesabınıza eklenir.
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px;cursor:pointer;" onclick="toggleFaq(this)">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-weight:600;">
+          Günlük ücretsiz hak satın aldığım haklardan düşer mi? <span>▼</span>
+        </div>
+        <div class="faq-ans" style="display:none;margin-top:0.8rem;color:var(--text-muted);font-size:0.9rem;">
+          Hayır. Günlük hak ile satın alınan haklar ayrı tutulur. Günlük hakkınızı kullandıktan sonra satın aldığınız haklardan düşülür.
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px;cursor:pointer;" onclick="toggleFaq(this)">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-weight:600;">
+          İade politikası nedir? <span>▼</span>
+        </div>
+        <div class="faq-ans" style="display:none;margin-top:0.8rem;color:var(--text-muted);font-size:0.9rem;">
+          Kullanılmamış haklar için 7 gün içinde iade talebinde bulunabilirsiniz.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal">
+    <div class="modal-title">💳 Ödeme Bilgileri</div>
+    <div class="modal-sub" id="payDesc">Başlangıç Paketi — 10 Tarama — 100 TL</div>
+
+    <!-- Card Preview -->
+    <div class="card-preview">
+      <div class="card-chip">💳</div>
+      <div class="card-num" id="previewNum">•••• •••• •••• ••••</div>
+      <div class="card-info">
+        <span id="previewName">AD SOYAD</span>
+        <span id="previewExp">AA/YY</span>
+      </div>
+    </div>
+
+    <div class="alert alert-error" id="payErr">⚠️ <span id="payErrMsg"></span></div>
+    <div class="alert alert-success" id="payOk">✅ <span id="payOkMsg"></span></div>
+
+    <div class="form-group">
+      <label>Kart Üzerindeki Ad</label>
+      <input type="text" id="cardName" class="form-group" style="width:100%;padding:12px 16px;background:var(--bg);border:2px solid transparent;border-radius:var(--radius-sm);font-size:0.95rem;font-family:Inter,sans-serif;outline:none;transition:all 0.2s;" placeholder="Ad Soyad"
+        oninput="document.getElementById('previewName').textContent = this.value.toUpperCase() || 'AD SOYAD'"/>
+    </div>
+    <div class="form-group">
+      <label>Kart Numarası</label>
+      <input type="text" id="cardNumber" style="width:100%;padding:12px 16px;background:var(--bg);border:2px solid transparent;border-radius:var(--radius-sm);font-size:0.95rem;font-family:Inter,sans-serif;outline:none;transition:all 0.2s;" placeholder="0000 0000 0000 0000" maxlength="19"
+        oninput="formatCard(this)"/>
+    </div>
+    <div class="two-col">
+      <div class="form-group">
+        <label>Son Kullanma</label>
+        <input type="text" id="expiry" style="width:100%;padding:12px 16px;background:var(--bg);border:2px solid transparent;border-radius:var(--radius-sm);font-size:0.95rem;font-family:Inter,sans-serif;outline:none;transition:all 0.2s;" placeholder="AA/YY" maxlength="5"
+          oninput="formatExpiry(this); document.getElementById('previewExp').textContent = this.value || 'AA/YY'"/>
+      </div>
+      <div class="form-group">
+        <label>CVV</label>
+        <input type="text" id="cvv" style="width:100%;padding:12px 16px;background:var(--bg);border:2px solid transparent;border-radius:var(--radius-sm);font-size:0.95rem;font-family:Inter,sans-serif;outline:none;transition:all 0.2s;" placeholder="•••" maxlength="4"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closePayment()">İptal</button>
+      <button class="btn-pay" id="payBtn" onclick="processPayment()">💳 Ödemeyi Tamamla</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.6);font-size:0.9rem;">
+    © 2024 güvenlimi? · Tüm hakları saklıdır
+  </div>
+</footer>
+
+<script>
+let selectedPackage = null;
+
+function openPayment(pkgId, credits, price) {
+  const token = localStorage.getItem('token');
+  if (!token) { window.location.href = 'login.html'; return; }
+  selectedPackage = pkgId;
+  document.getElementById('payDesc').textContent = `${credits} Hak — ${price} TL`;
+  document.getElementById('payBtn').textContent = `💳 ${price} TL Öde`;
+  document.getElementById('payErr').classList.remove('show');
+  document.getElementById('payOk').classList.remove('show');
+  document.getElementById('payModal').classList.add('show');
+}
+
+function closePayment() {
+  document.getElementById('payModal').classList.remove('show');
+}
+
+function formatCard(input) {
+  let v = input.value.replace(/\D/g, '').substring(0, 16);
+  input.value = v.match(/.{1,4}/g)?.join(' ') || v;
+  document.getElementById('previewNum').textContent =
+    (v + '•'.repeat(16 - v.length)).match(/.{1,4}/g).join(' ');
+}
+
+function formatExpiry(input) {
+  let v = input.value.replace(/\D/g, '');
+  if (v.length >= 2) v = v.substring(0, 2) + '/' + v.substring(2, 4);
+  input.value = v;
+}
+
+async function processPayment() {
+  const cardName = document.getElementById('cardName').value.trim();
+  const cardNumber = document.getElementById('cardNumber').value.trim();
+  const expiry = document.getElementById('expiry').value.trim();
+  const cvv = document.getElementById('cvv').value.trim();
+
+  if (!cardName || !cardNumber || !expiry || !cvv) {
+    document.getElementById('payErrMsg').textContent = 'Tüm kart bilgilerini doldurun';
+    document.getElementById('payErr').classList.add('show');
+    return;
+  }
+  if (cardNumber.replace(/\s/g, '').length < 16) {
+    document.getElementById('payErrMsg').textContent = 'Geçerli bir kart numarası girin';
+    document.getElementById('payErr').classList.add('show');
+    return;
+  }
+
+  const btn = document.getElementById('payBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ İşleniyor...';
+  document.getElementById('payErr').classList.remove('show');
+
+  try {
+    const token = localStorage.getItem('token');
+    const res = await fetch('/api/purchase', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ packageId: selectedPackage, cardNumber, cardName, expiry, cvv })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      document.getElementById('payErrMsg').textContent = data.error;
+      document.getElementById('payErr').classList.add('show');
+    } else {
+      document.getElementById('payOkMsg').textContent = data.message;
+      document.getElementById('payOk').classList.add('show');
+      btn.textContent = '✅ Ödeme Tamamlandı';
+      setTimeout(() => { closePayment(); window.location.href = 'dashboard.html'; }, 2000);
+    }
+  } catch {
+    document.getElementById('payErrMsg').textContent = 'Sunucu hatası. Tekrar deneyin.';
+    document.getElementById('payErr').classList.add('show');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function toggleFaq(el) {
+  el.querySelector('.faq-ans').style.display =
+    el.querySelector('.faq-ans').style.display === 'none' ? 'block' : 'none';
+}
+
+// Navbar auth state
+const token = localStorage.getItem('token');
+if (token) {
+  document.getElementById('navActions').innerHTML = `
+    <a href="dashboard.html" class="btn-outline-nav">Dashboard</a>
+    <button onclick="localStorage.clear();window.location.href='index.html'" class="btn-nav">Çıkış</button>
+  `;
+}
+
+// Close modal on overlay click
+document.getElementById('payModal').addEventListener('click', function(e) {
+  if (e.target === this) closePayment();
+});
+</script>
+</body>
+</html>

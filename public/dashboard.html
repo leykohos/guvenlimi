@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Güvenlimi?</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-brand">
+    <span class="shield">🛡️</span> güvenlimi<span class="brand-dot">?</span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="dashboard.html" class="active">Tarama</a></li>
+    <li><a href="pricing.html">Hak Satın Al</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <span id="userName" style="font-size:0.9rem;color:var(--text-muted);font-weight:500;"></span>
+    <button onclick="logout()" class="btn-outline-nav">Çıkış</button>
+  </div>
+</nav>
+
+<div class="dashboard-page">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>🔍 Web Güvenlik Taraması</h1>
+    <p>Analiz etmek istediğiniz web sitesinin adresini girin</p>
+    <div id="creditBadge" class="credit-badge">
+      🛡️ <span id="creditText">Yükleniyor...</span>
+    </div>
+  </div>
+
+  <!-- Scan Box -->
+  <div class="scan-box">
+    <h2 style="margin-bottom:0.3rem;font-size:1.2rem;">URL Girin</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.5rem;">Örn: example.com veya https://example.com</p>
+
+    <div class="alert alert-error" id="scanErr">⚠️ <span id="scanErrMsg"></span></div>
+
+    <div class="scan-input-group">
+      <input type="text" class="scan-input" id="urlInput" placeholder="🌐 https://ornek.com"/>
+      <button class="scan-btn" id="scanBtn" onclick="startScan()">🔍 Tara</button>
+    </div>
+
+    <div style="margin-top:1.5rem;">
+      <p style="font-size:0.8rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">Ne kontrol ediyoruz?</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <span style="background:var(--bg);border:1px solid var(--border);padding:4px 12px;border-radius:50px;font-size:0.8rem;color:var(--text-muted);">🔒 HTTPS/SSL</span>
+        <span style="background:var(--bg);border:1px solid var(--border);padding:4px 12px;border-radius:50px;font-size:0.8rem;color:var(--text-muted);">🛡️ Güvenlik Başlıkları</span>
+        <span style="background:var(--bg);border:1px solid var(--border);padding:4px 12px;border-radius:50px;font-size:0.8rem;color:var(--text-muted);">💉 XSS & SQL Injection</span>
+        <span style="background:var(--bg);border:1px solid var(--border);padding:4px 12px;border-radius:50px;font-size:0.8rem;color:var(--text-muted);">🎯 Clickjacking</span>
+        <span style="background:var(--bg);border:1px solid var(--border);padding:4px 12px;border-radius:50px;font-size:0.8rem;color:var(--text-muted);">🔄 Açık Yönlendirme</span>
+        <span style="background:var(--bg);border:1px solid var(--border);padding:4px 12px;border-radius:50px;font-size:0.8rem;color:var(--text-muted);">📁 Robots.txt</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div class="scan-loader" id="loader">
+    <div class="spinner"></div>
+    <p style="font-weight:600;color:var(--primary);font-size:1.1rem;">Analiz yapılıyor...</p>
+    <p style="color:var(--text-muted);font-size:0.9rem;margin-top:0.5rem;">Gemini AI web sitenizi inceliyor, lütfen bekleyin</p>
+    <div id="loadingSteps" style="margin-top:1.5rem;display:flex;flex-direction:column;gap:6px;max-width:300px;margin-left:auto;margin-right:auto;text-align:left;"></div>
+  </div>
+
+  <!-- Recent Scans -->
+  <div class="scan-history">
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--text-muted);">📋 Son Taramalar</h3>
+    <div id="historyList"></div>
+    <div id="noHistory" style="display:none;text-align:center;padding:2rem;color:var(--text-muted);background:white;border-radius:var(--radius-sm);border:1px solid var(--border);">
+      <span style="font-size:2rem;">🔍</span><br>
+      Henüz tarama yapmadınız
+    </div>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+if (!token) window.location.href = 'login.html';
+
+let userData = null;
+
+async function loadUser() {
+  try {
+    const res = await fetch('/api/me', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { localStorage.clear(); window.location.href = 'login.html'; return; }
+    userData = await res.json();
+    document.getElementById('userName').textContent = '👤 ' + userData.name;
+
+    const today = new Date().toISOString().split('T')[0];
+    const usedToday = userData.last_scan_date === today;
+    const credits = userData.credits;
+
+    let badgeText = '';
+    let badgeClass = '';
+    if (usedToday) {
+      badgeText = `Bugünkü tarama hakkınızı kullandınız. ${credits} hakkınız kaldı.`;
+      badgeClass = 'low';
+      document.getElementById('scanBtn').disabled = true;
+      document.getElementById('scanBtn').textContent = '✋ Günlük Limit Doldu';
+    } else if (credits <= 0) {
+      badgeText = 'Tarama hakkınız kalmadı';
+      badgeClass = 'low';
+      document.getElementById('scanBtn').disabled = true;
+    } else {
+      badgeText = `${credits} tarama hakkınız var`;
+    }
+
+    const badge = document.getElementById('creditBadge');
+    badge.textContent = '🛡️ ' + badgeText;
+    if (badgeClass) badge.classList.add(badgeClass);
+
+    if (usedToday || credits <= 0) {
+      showError(`<a href="pricing.html" style="color:var(--primary);font-weight:700;">Daha fazla hak satın almak için tıklayın →</a>`);
+      document.getElementById('scanErr').innerHTML = `⚡ <a href="pricing.html" style="color:#ff3547;font-weight:600;">Daha fazla tarama hakkı satın almak için tıklayın →</a>`;
+      document.getElementById('scanErr').classList.add('show');
+    }
+
+    // Load history
+    if (userData.scans && userData.scans.length > 0) {
+      const list = document.getElementById('historyList');
+      userData.scans.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `
+          <div>
+            <div style="font-weight:600;font-size:0.95rem;">🌐 ${s.url}</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px;">📅 ${new Date(s.created_at).toLocaleString('tr-TR')}</div>
+          </div>
+          <span style="color:var(--primary);font-size:0.85rem;font-weight:600;">Raporu Gör →</span>
+        `;
+        item.onclick = () => window.location.href = `report.html?id=${s.id}`;
+        list.appendChild(item);
+      });
+    } else {
+      document.getElementById('noHistory').style.display = 'block';
+    }
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('scanErrMsg');
+  el.innerHTML = msg;
+  document.getElementById('scanErr').classList.add('show');
+}
+
+const loadingMessages = [
+  '🔍 HTTPS durumu kontrol ediliyor...',
+  '🔒 SSL sertifikası analiz ediliyor...',
+  '🛡️ Güvenlik başlıkları taranıyor...',
+  '💉 XSS açıkları aranıyor...',
+  '🎯 Clickjacking koruması kontrol ediliyor...',
+  '🤖 Gemini AI rapor hazırlıyor...'
+];
+
+async function startScan() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url) return showError('Lütfen bir URL girin');
+
+  document.getElementById('scanErr').classList.remove('show');
+  document.getElementById('scanBtn').disabled = true;
+  document.getElementById('loader').style.display = 'block';
+
+  // Animate loading steps
+  const stepsEl = document.getElementById('loadingSteps');
+  stepsEl.innerHTML = '';
+  let i = 0;
+  const stepInterval = setInterval(() => {
+    if (i < loadingMessages.length) {
+      const s = document.createElement('div');
+      s.style.cssText = 'font-size:0.85rem;color:var(--text-muted);padding:4px 0;animation:fadeInUp 0.3s ease;';
+      s.textContent = loadingMessages[i++];
+      stepsEl.appendChild(s);
+    }
+  }, 1500);
+
+  try {
+    const res = await fetch('/api/scan', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+    const data = await res.json();
+    clearInterval(stepInterval);
+
+    if (!res.ok) {
+      document.getElementById('loader').style.display = 'none';
+      if (data.canPurchase) {
+        document.getElementById('scanErr').innerHTML = `⚡ ${data.error} — <a href="pricing.html" style="color:#ff3547;font-weight:600;">Hak Satın Al →</a>`;
+        document.getElementById('scanErr').classList.add('show');
+      } else {
+        showError(data.error);
+      }
+      document.getElementById('scanBtn').disabled = false;
+      return;
+    }
+
+    window.location.href = `report.html?id=${data.scanId}`;
+  } catch(e) {
+    clearInterval(stepInterval);
+    document.getElementById('loader').style.display = 'none';
+    showError('Sunucu hatası. Tekrar deneyin.');
+    document.getElementById('scanBtn').disabled = false;
+  }
+}
+
+document.getElementById('urlInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startScan();
+});
+
+function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+loadUser();
+</script>
+</body>
+</html>

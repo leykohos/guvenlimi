@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Giriş Yap - Güvenlimi?</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <span class="shield-sm">🛡️</span>
+      güvenlimi<span style="color:var(--text)">?</span>
+    </div>
+    <h1 class="auth-title">Tekrar Hoş Geldin!</h1>
+    <p class="auth-sub">Hesabına giriş yap ve taramaya başla</p>
+
+    <div class="alert alert-error" id="alertErr">⚠️ <span id="errMsg"></span></div>
+    <div class="alert alert-success" id="alertOk">✅ <span id="okMsg"></span></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>E-posta Adresi</label>
+        <div class="form-input-icon">
+          <span class="icon">✉️</span>
+          <input type="email" id="email" placeholder="ornek@email.com" required/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Şifre</label>
+        <div class="form-input-icon">
+          <span class="icon">🔒</span>
+          <input type="password" id="password" placeholder="Şifrenizi girin" required/>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+        🔐 Giriş Yap
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.5rem;color:var(--text-muted);font-size:0.9rem;">
+      Hesabın yok mu? <a href="register.html" style="color:var(--primary);font-weight:600;">Ücretsiz Kayıt Ol</a>
+    </p>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById('loginForm');
+const alertErr = document.getElementById('alertErr');
+const alertOk = document.getElementById('alertOk');
+const errMsg = document.getElementById('errMsg');
+const okMsg = document.getElementById('okMsg');
+const submitBtn = document.getElementById('submitBtn');
+
+function showErr(msg) { errMsg.textContent = msg; alertErr.classList.add('show'); alertOk.classList.remove('show'); }
+function showOk(msg) { okMsg.textContent = msg; alertOk.classList.add('show'); alertErr.classList.remove('show'); }
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const pw = document.getElementById('password').value;
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Giriş yapılıyor...';
+
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pw })
+    });
+    const data = await res.json();
+    if (!res.ok) return showErr(data.error);
+    localStorage.setItem('token', data.token);
+    showOk('Giriş başarılı! Yönlendiriliyorsunuz...');
+    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+  } catch {
+    showErr('Sunucu hatası. Lütfen tekrar deneyin.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '🔐 Giriş Yap';
+  }
+});
+</script>
+</body>
+</html>
